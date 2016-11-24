@@ -65,13 +65,18 @@ document.getElementById('ref-import-btn').addEventListener('click', function (e)
     var refDb = new PouchDB('reference'),
 	ref_id_value = document.getElementById('ref-lang-code').value.toLowerCase() + '_' + document.getElementById('ref-version').value.toLowerCase(),
 	ref_entry = {},
-    	files = fs.readdirSync(document.getElementById('ref-path').value);
+	files = fs.readdirSync(document.getElementById('ref-path').value);
+	if (files == "") {
+		alertModal("Reference Usfm Setting", "Usfm file doesn't exist on the given path!!");
+		return;
+	}
     ref_entry.ref_id = ref_id_value;
     ref_entry.ref_name =  document.getElementById('ref-name').value;
     ref_entry.isDefault = false;
     refDb.get('refs').then(function (doc) {
 	var refExistsFlag = false;
 	var updatedDoc = doc.ref_ids.forEach(function (ref_doc) {
+		console.log(ref_doc)
 	    if(ref_doc.ref_id === ref_id_value) {
 		refExistsFlag = true;
 	    }
@@ -161,16 +166,16 @@ function reference_setting(){
   	 version  = $("#ref-version").val(),
   	 path     = $("#ref-path").val(),
   	 isValid = true;
-  if(name == ""){
+  if(name.trim() == ""){
     alert_message(".alert-danger", "Reference Bible name must not be blank");
     isValid = false;
-  }else if(langCode === null || langCode === "") {
+  }else if(langCode.trim() === null || langCode.trim() === "") {
     alert_message(".alert-danger", "Reference Bible language code must not be blank");
      isValid = false;
-  }else if(version === null || version === ""){
+  }else if(version.trim() === null || version.trim() === ""){
     alert_message(".alert-danger", "Reference Bible version must not be blank");
     isValid = false;
-  }else if(path === null || path === ""){
+  }else if(path.trim() === null || path === ""){
     alert_message(".alert-danger", "Reference Bible path must not be blank");
     isValid = false;
   }else{
@@ -235,6 +240,10 @@ function setReferenceSetting(){
 //get reference setting
 $(function(){
 	setReferenceSetting();
+	var refDb = new PouchDB('reference');
+	refDb.get('refs').then(function (doc) {
+		console.log(doc)
+	})
 });
 
 function alertModal(heading, formContent) {

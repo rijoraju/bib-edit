@@ -19,7 +19,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="index.html"><img alt="Brand" src="../images/logo.png"></a>
+          <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="index.html" class="nav-btn"><img alt="Brand" src="../images/logo.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -31,13 +31,16 @@
           </ul>
           <ul class="nav navbar-nav navbar-right verse-diff-on">
             <li>
+              <a href="javascript:;" data-toggle="tooltip" data-placement="bottom" title="search" id="searchText"><i class="fa fa-search fa-2x"></i></a></li>
+            </li>
+            <li>
                 <div style="margin-top:10px;">
                   <input type="checkbox" class="check-diff"/> 
                 </div>
                 <!-- <a href="javascript:void(0);" onClick="setDiffReferenceText('', '');" >Check Difference</a> -->
             </li>
-            <li><a href="settings.html" data-toggle="tooltip" data-placement="bottom" title="Settings"><i class="fa fa-cog fa-2x"></i></a></li>
-            <li><a href="about.html" data-toggle="tooltip" data-placement="bottom" title="About"><i class="fa fa-info fa-2x"></i></a></li>
+            <li><a href="settings.html" data-toggle="tooltip" data-placement="bottom" title="Settings" class="nav-btn"><i class="fa fa-cog fa-2x"></i></a></li>
+            <li><a href="about.html" data-toggle="tooltip" data-placement="bottom" title="About" class="nav-btn"><i class="fa fa-info fa-2x"></i></a></li>
             <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="Export" id="export-usfm"><i class="fa fa-cloud-download fa-2x"></i></a>
           </ul>
         </div>
@@ -207,6 +210,65 @@
       </div>
       <!-- /.modal-dialog-->
     </div>
+
+    <div class="modal fade"  tabindex="-1" role="dialog" id="searchTextModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title" id="heading">Search Text:</h4>
+          </div>
+          <div class="modal-body" id="content">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                <label>Find:</label>
+                  <input type="text" class="form-control" aria-label="..." id="searchTextBox">
+                </div><!-- /input-group -->
+                <div class="form-group">
+                <label>Replace:</label>
+                  <input type="text" class="form-control" aria-label="..." id="replaceTextBox">
+                </div><!-- /input-group -->
+              </div><!-- /.col-lg-6 -->
+            </div><!-- /.row -->
+          </div>
+          <div class="modal-footer">
+            <!-- <button class="btn btn-primary" id="btnfind">Find</button> -->
+            <button class="btn btn-primary" id="btnfindReplace">Replace</button>
+            <span class="btn btn-primary" data-dismiss="modal">Close</span>
+          </div>
+        </div>
+        <!-- /.modal-content-->
+      </div>
+      <!-- /.modal-dialog-->
+    </div>
+
+    <div class="modal fade"  tabindex="-1" role="dialog" id="editContentWarning">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title" id="heading">Warning!!</h4>
+          </div>
+          <div class="modal-body" id="content">
+            <div class="row">
+              <div class="col-lg-6">
+                <p>You have edited content. Please save before go to other window. Otherwsie your change will be lost.</p>
+              </div><!-- /.col-lg-6 -->
+            </div><!-- /.row -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="btnSaveContent">Save</button>
+            <button class="btn btn-primary" data-dismiss="modal" id="btnDntSaveContent">Don't Save</button>
+          </div>
+        </div>
+        <!-- /.modal-content-->
+      </div>
+      <!-- /.modal-dialog-->
+    </div>
+
+
+
     <!--
     Bootstrap core JavaScript
     ==================================================

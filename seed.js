@@ -45,6 +45,7 @@ function setupRefDb() {
 	const refEnJson = require('./lib/refs.json'),
 	      chunksJson = require('./lib/chunks.json');
 	refDb.bulkDocs(refEnJson).then(function (response) {
+		console.log(chunksJson);
 	    refDb.put(chunksJson).then(function (response) {
 		console.log(response);
 		refDb.close();	

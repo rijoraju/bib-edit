@@ -31,9 +31,10 @@ module.exports = {
 		c++;
 		v = 0;
 	    } else if(splitLine[0] == '\\v') {
+	    	checkContent = line.indexOf(' ', 3)+1
 		book.chapters[c-1].verses.push({
 		    "verse_number": parseInt(splitLine[1], 10),
-		    "verse": line.substring(line.indexOf(' ', 3)+1)
+		    "verse": (checkContent == 0 ) ? "" : line.substring(checkContent)
 		});
 		v++;
 	    } else if(splitLine[0] == '\\s') {

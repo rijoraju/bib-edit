@@ -1,17 +1,19 @@
 const session = require('electron').remote.session,
 PouchDB = require('pouchdb');
 var bibUtil = require("../util/json_to_usfm.js"),
-DiffMatchPatch = require('diff-match-patch'),
-dmp_diff = new DiffMatchPatch();
+	DiffMatchPatch = require('diff-match-patch'),
+	dmp_diff = new DiffMatchPatch(),
+	db = new PouchDB('database'),
+	refDb = new PouchDB('reference'),
+	book,
+	chapter,
+	currentBook,
+	editContent = false;
 
-var db = new PouchDB('database'),
-refDb = new PouchDB('reference'),
-book,
-chapter,
-currentBook;
 
 
 var constants = require('../util/constants.js');
+var stringReplace = require('../util/stringReplace.js');
 booksList = constants.booksList,
 otBookStart = 1,
 otBookEnd = 39,
@@ -95,7 +97,6 @@ session.defaultSession.cookies.get({url: 'http://book.autographa.com'}, (error, 
 		document.getElementById('chapterBtnSpan').innerHTML = '<a  id="chapterBtn" class="btn btn-default" href="javascript:getBookChapterList('+"'"+book+"'"+');" >'+chapter+'</a>'
 		db.get(book).then(function (doc) {
 			refDb.get('refChunks').then(function (chunkDoc) {
-				console.log(doc.chapters[parseInt(chapter,10)-1].verses.length);
 				currentBook = doc;
 				createRefSelections();
 				createVerseInputs(doc.chapters[parseInt(chapter,10)-1].verses, chunkDoc.chunks[parseInt(book,10)-1], chapter);
@@ -328,6 +329,93 @@ function getReferenceText(refId, callback) {
 	}).catch(function (err) {
 		callback(err, "");
 	});
+}
+
+
+
+function findAndReplaceText(searchVal, replaceVal) {
+	refDb = new PouchDB('reference');
+	db = new PouchDB('database');
+	session.defaultSession.cookies.get({url: 'http://book.autographa.com'}, (error, cookie) => {
+		book = '1';
+		if(cookie.length > 0) {
+			book = cookie[0].value;
+		}
+	});
+	session.defaultSession.cookies.get({url: 'http://chapter.autographa.com'}, (error, cookie) => {
+		if(cookie.length > 0) {
+			chapter = cookie[0].value;
+		}
+	});
+	var book_verses = ''; 
+	refId = $($('.ref-drop-down :selected')).val();
+	refId = (refId === 0 ? document.getElementById('refs-select').value : refId);
+	var id = refId + '_' + bookCodeList[parseInt(book,10)-1],
+	i;
+	refDb.get(id).then(function (doc) {
+		for(i=0; i<doc.chapters.length; i++) {
+			if(doc.chapters[i].chapter == parseInt(chapter, 10)) {
+				break;
+			}
+		}
+		book_verses = doc.chapters[i].verses
+	}).catch(function (err) {
+		console.log(err);
+	});
+	db.get(book).then(function (doc) {
+		refDb.get('refChunks').then(function (chunkDoc) {
+			currentBook = doc;
+			findReplaceSearchInputs(doc.chapters[parseInt(chapter,10)-1].verses, chunkDoc.chunks[parseInt(book,10)-1], chapter, book_verses, searchVal, replaceVal);
+		}).catch(function(err){
+			console.log(err);
+		});
+	}).catch(function (err) {
+		console.log('Error: While retrieving document. ' + err);
+	});
+
+}
+
+function findReplaceSearchInputs(verses, chunks, chapter, book_original_verses, searchVal, replaceVal){
+	document.getElementById('input-verses').innerHTML = "";
+	var i, chunkIndex = 0, chunkVerseStart, chunkVerseEnd;
+	for(i=0; i<chunks.length; i++) {
+		if(parseInt(chunks[i].chp, 10) === parseInt(chapter, 10)) {
+			chunkIndex = i+1;
+			chunkVerseStart = parseInt(chunks[i].firstvs, 10);
+			chunkVerseEnd = parseInt(chunks[i+1].firstvs, 10) - 1;
+			break;
+		}
+	}
+
+	for (i=1; i<=verses.length; i++) {
+		var divContainer = '<div>';
+		spanVerseNum = '';
+
+		if(i > chunkVerseEnd) {
+			chunkVerseStart = parseInt(chunks[chunkIndex].firstvs, 10);
+			if(chunkIndex === chunks.length-1 || parseInt((chunks[chunkIndex+1].chp), 10) != chapter) {
+				chunkVerseEnd = verses.length;
+			} else {
+				chunkIndex++;
+				chunkVerseEnd = parseInt(chunks[chunkIndex].firstvs, 10)-1;
+			}
+		}
+
+		var chunk = chunkVerseStart + '-' + chunkVerseEnd;
+		spanVerse = "<span chunk-group="+chunk+" contenteditable="+true+" "+"id=v"+i+">";
+		// $(spanVerse).attr("chunk-group", chunk);
+		// $(spanVerse).attr("contenteditable", true);
+		//spanVerse.id = "v"+i;
+		modifiedVerse = verses[i-1].verse.replaceAll(searchVal, replaceVal);
+		spanVerse+= modifiedVerse;
+		spanVerse+='</span>'
+		spanVerseNum += '<span class="verse-num">'+i+'</span>'//appendChild(document.createTextNode(i));
+		divContainer += spanVerseNum;
+		divContainer += spanVerse;
+		divContainer += '</div>'
+		$("#input-verses").append(divContainer);
+	}
+	highlightRef();
 }
 
 function createRefSelections() {
@@ -792,6 +880,16 @@ function saveReferenceLayout(layout){
 }
 
 $(function(){
+	var db = new PouchDB("database");
+	db.allDocs({
+	  include_docs: true,
+	  attachments: true
+	}).then(function (result) {
+	  console.log(result['rows'][0].doc.chapters[0].verses[0].verse);
+	}).catch(function (err) {
+	  console.log(err);
+	});
+
 	$('[type="checkbox"]').bootstrapSwitch();
 	refDb = new PouchDB('reference');
 	refDb.get('targetReferenceLayout').then(function (doc) {
@@ -887,5 +985,74 @@ $('.check-diff').on('switchChange.bootstrapSwitch', function (event, state) {
 	}
 });
 
+$("#searchText").click(function(){
+	$("#searchTextModal").modal('toggle');
+});
+$("#btnfindReplace").click(function(){
+	findVal = $("#searchTextBox").val();
+	replaceVal = $("#replaceTextBox").val();
+	if(findVal == "" && findVal.length == 0){
+		$("#searchTextModal").modal('toggle');
+		alertModal("Find message!!", "Please enter find value to search.");
+		return
+	}
+	if(replaceVal == "" && replaceVal.length == 0){
+		$("#searchTextModal").modal('toggle');
+		alertModal("Replace text message!!", "Please enter replace value to replace text.");
+		return
+	}
+	findAndReplaceText(findVal, replaceVal);
+});
+$("#btnfind").click(function(){
+	findVal = $("#searchTextBox").val();
+	if(findVal == "" && findVal.length == 0){
+		$("#searchTextModal").modal('toggle');
+		alertModal("Find message!!", "Please enter find value to search.");
+		return
+	}
+	findAndReplaceText(findVal, "highlight");
+	$("#searchTextModal").modal('toggle');
+});
+$(".col-editor").keyup(function(){
+	editContent = true;
+});
+$(".nav-btn").click(function(e){
+	e.preventDefault();
+	if(editContent === true){
+		$("#editContentWarning").modal('toggle');
+	}else {
+		window.location = this.href;
+	}
+});
 
+$("#btnSaveContent").click(function(){
 
+	/*	==================================================
+		========== save document after edit ==============
+		==================================================
+	*/
+	refDb = new PouchDB('reference');
+	db = new PouchDB('database');
+	var verses = currentBook.chapters[parseInt(chapter,10)-1].verses;
+	verses.forEach(function (verse, index) {
+		var vId = 'v'+(index+1);
+		verse.verse = document.getElementById(vId).textContent;
+	});
+	currentBook.chapters[parseInt(chapter,10)-1].verses = verses;
+	db.put(currentBook).then(function (response) {
+		editContent = false;
+		alertModal("Save Message!!", "Edited Content saved successfully!!");
+		refDb.close();
+		db.close();
+	}).catch(function (err) {
+		console.log(err);
+	});
+	$("#editContentWarning").modal('toggle');
+	/*	==================================================
+		========== end save document after edit ==============
+		==================================================
+	*/
+});
+$("#btnDntSaveContent").click(function(){
+	editContent = false;
+});
