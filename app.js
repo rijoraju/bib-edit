@@ -28,7 +28,8 @@ function createWindow() {
     'accept-first-mouse': true,
     'title-bar-style': 'hidden',
     'webPreferences': {'session': session},
-    show: false
+    show: false,
+    icon: __dirname + '/build/icon.ico'
     });
     //loading window gracefully
     win.once('ready-to-show', () => {
