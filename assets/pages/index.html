@@ -69,7 +69,7 @@
         <div class="col-sm-6 col-fixed col-editor">
           <div class="row">
             <div class="col-12 center-align">
-              <div class="btn-group" role="group" aria-label="..."><a class="btn btn-success btn-default" href="#">Translation</a></div>
+              <div class="btn-group" role="group" aria-label="..."><a class="btn btn-success btn-default" href="#">Target</a></div>
             </div>
           </div>
           <div class="row col-flex">
@@ -222,13 +222,25 @@
           <div class="modal-body" id="content">
             <div class="row">
               <div class="col-lg-6">
+                <label class="form-check-inline">
+                  <input type="radio" name="searchOption"  checked class="form-check-input" value="current" /> Current Chapter
+                </label>
+                <label class="form-check-inline">
+                  <input type="radio" name="searchOption"  class="form-check-input" value="all"/> All Chapters
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
                 <div class="form-group">
                 <label>Find:</label>
                   <input type="text" class="form-control" aria-label="..." id="searchTextBox">
+                  <span class="error help-inline" id="findError"></span>
                 </div><!-- /input-group -->
                 <div class="form-group">
-                <label>Replace:</label>
+                <label>Replace With:</label>
                   <input type="text" class="form-control" aria-label="..." id="replaceTextBox">
+                  <span class="error help-inline" id="replaceError"></span>
                 </div><!-- /input-group -->
               </div><!-- /.col-lg-6 -->
             </div><!-- /.row -->
