@@ -8,7 +8,8 @@ var bibUtil = require("../util/json_to_usfm.js"),
 	book,
 	chapter,
 	currentBook,
-	editContent = false;
+	editContent = false,
+	replaceCount = 0;
 
 
 
@@ -334,7 +335,7 @@ function getReferenceText(refId, callback) {
 
 
 
-function findAndReplaceText(searchVal, replaceVal) {
+function findAndReplaceText(searchVal, replaceVal, option) {
 	refDb = new PouchDB('reference');
 	db = new PouchDB('database');
 	session.defaultSession.cookies.get({url: 'http://book.autographa.com'}, (error, cookie) => {
@@ -348,25 +349,13 @@ function findAndReplaceText(searchVal, replaceVal) {
 			chapter = cookie[0].value;
 		}
 	});
-	var book_verses = ''; 
-	refId = $($('.ref-drop-down :selected')).val();
-	refId = (refId === 0 ? document.getElementById('refs-select').value : refId);
-	var id = refId + '_' + bookCodeList[parseInt(book,10)-1],
-	i;
-	refDb.get(id).then(function (doc) {
-		for(i=0; i<doc.chapters.length; i++) {
-			if(doc.chapters[i].chapter == parseInt(chapter, 10)) {
-				break;
-			}
-		}
-		book_verses = doc.chapters[i].verses
-	}).catch(function (err) {
-		console.log(err);
-	});
 	db.get(book).then(function (doc) {
 		refDb.get('refChunks').then(function (chunkDoc) {
 			currentBook = doc;
-			findReplaceSearchInputs(doc.chapters[parseInt(chapter,10)-1].verses, chunkDoc.chunks[parseInt(book,10)-1], chapter, book_verses, searchVal, replaceVal);
+			var totalReplacedWord = findReplaceSearchInputs(doc.chapters[parseInt(chapter,10)-1].verses, chunkDoc.chunks[parseInt(book,10)-1], chapter, searchVal, replaceVal);
+			replaceCount = 0;
+			$("#searchTextModal").modal('toggle');
+			alertModal("Replace Message!!", "Total word(s) replaced: "+totalReplacedWord);
 		}).catch(function(err){
 			console.log(err);
 		});
@@ -376,7 +365,7 @@ function findAndReplaceText(searchVal, replaceVal) {
 
 }
 
-function findReplaceSearchInputs(verses, chunks, chapter, book_original_verses, searchVal, replaceVal){
+function findReplaceSearchInputs(verses, chunks, chapter, searchVal, replaceVal){
 	document.getElementById('input-verses').innerHTML = "";
 	var i, chunkIndex = 0, chunkVerseStart, chunkVerseEnd;
 	for(i=0; i<chunks.length; i++) {
@@ -407,8 +396,14 @@ function findReplaceSearchInputs(verses, chunks, chapter, book_original_verses, 
 		// $(spanVerse).attr("chunk-group", chunk);
 		// $(spanVerse).attr("contenteditable", true);
 		//spanVerse.id = "v"+i;
-		modifiedVerse = verses[i-1].verse.replaceAll(searchVal, replaceVal);
-		spanVerse+= modifiedVerse;
+		var originalVerse = verses[i-1].verse
+		if(originalVerse.search(new RegExp(searchVal, 'g')) >= 0){
+			modifiedVerse = originalVerse.replaceAll(searchVal, replaceVal);
+			spanVerse+= modifiedVerse;	
+			replaceCount++;
+		}else {
+			spanVerse+= originalVerse;
+		}
 		spanVerse+='</span>'
 		spanVerseNum += '<span class="verse-num">'+i+'</span>'//appendChild(document.createTextNode(i));
 		divContainer += spanVerseNum;
@@ -417,6 +412,7 @@ function findReplaceSearchInputs(verses, chunks, chapter, book_original_verses, 
 		$("#input-verses").append(divContainer);
 	}
 	highlightRef();
+	return replaceCount;
 }
 
 function createRefSelections() {
@@ -989,21 +985,24 @@ $('.check-diff').on('switchChange.bootstrapSwitch', function (event, state) {
 
 $("#searchText").click(function(){
 	$("#searchTextModal").modal('toggle');
+	$(".error").html("");
+	$("#searchTextBox").val('');
+	$("#replaceTextBox").val('');
 });
 $("#btnfindReplace").click(function(){
+	$(".error").html("");
 	findVal = $("#searchTextBox").val();
 	replaceVal = $("#replaceTextBox").val();
+	option = $(".form-check-input:checked").val();
 	if(findVal == "" && findVal.length == 0){
-		$("#searchTextModal").modal('toggle');
-		alertModal("Find message!!", "Please enter find value to search.");
+		$("#findError").html("Please enter value to search");
 		return
 	}
 	if(replaceVal == "" && replaceVal.length == 0){
-		$("#searchTextModal").modal('toggle');
-		alertModal("Replace text message!!", "Please enter replace value to replace text.");
+		$("#replaceError").html("Please enter value to replace");
 		return
 	}
-	findAndReplaceText(findVal, replaceVal);
+	findAndReplaceText(findVal, replaceVal, option);
 });
 $("#btnfind").click(function(){
 	findVal = $("#searchTextBox").val();
