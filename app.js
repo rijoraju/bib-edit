@@ -2,6 +2,18 @@ const electron = require('electron');
 const ipc = electron.ipcMain
 const PouchDB = require('pouchdb');
 const session = require('electron').session;
+  // const autoUpdater = require('electron-updater')
+
+
+ const autoUpdater = require('electron-simple-updater');
+autoUpdater.init('http://localhost:3000/updates.json');
+// autoUpdater.setFeedURL('http://localhost:3000/updateres.json');
+autoUpdater.init({
+  checkUpdateOnStart: false,
+  autoDownload: false
+});
+
+    // updater.start()
 
 // Module to control application life.
 const {app} = electron
@@ -78,6 +90,13 @@ function createWindow() {
     ipc.on('show-settings', function(){
         settingsWindow.show()
     });*/
+
+    // updater.on('updateRequired', function () {        
+    //     app.quit();
+    // })
+    // updater.on('updateAvailable', function () {
+    //     win.webContents.send('update-available');
+    // })
 }
 
 // This method will be called when Electron has finished
