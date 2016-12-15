@@ -256,22 +256,22 @@
       <!-- /.modal-dialog-->
     </div>
 
-    <div class="modal fade"  tabindex="-1" role="dialog" id="editContentWarning">
+    <div class="modal fade"  tabindex="-1" role="dialog" id="replaced-text-change">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-            <h4 class="modal-title" id="heading">Warning!!</h4>
+            <h4 class="modal-title" id="heading">Information!!</h4>
           </div>
           <div class="modal-body" id="content">
             <div class="row">
-              <div class="col-lg-6">
-                <p>You have edited content. Please save before go to other window. Otherwsie your change will be lost.</p>
+              <div class="col-lg-6" id="replace-message">
+               
               </div><!-- /.col-lg-6 -->
             </div><!-- /.row -->
           </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary" id="btnSaveContent">Save</button>
+          <div class="modal-footer" id="btn-replace">
+            <button class="btn btn-primary" onclick="saveReplacedText();">Save</button>
             <button class="btn btn-primary" data-dismiss="modal" id="btnDntSaveContent">Don't Save</button>
           </div>
         </div>
