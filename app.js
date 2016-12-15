@@ -6,11 +6,11 @@ const session = require('electron').session;
 
 
  const autoUpdater = require('electron-simple-updater');
-autoUpdater.init('http://localhost:3000/updates.json');
+autoUpdater.init('http://192.168.2.214:3000/updates.json');
 // autoUpdater.setFeedURL('http://localhost:3000/updateres.json');
 autoUpdater.init({
-  checkUpdateOnStart: false,
-  autoDownload: false
+  checkUpdateOnStart: true,
+  autoDownload: true
 });
 
     // updater.start()

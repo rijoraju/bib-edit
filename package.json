@@ -39,5 +39,5 @@
     "appId": "com.autographa.free",
     "app-category-type": "public.app.category.business"
   },
-  "updatesJsonUrl": "http://localhost:3000/updates.json"
+  "updatesJsonUrl": "http://192.168.2.214:3000/updates.json"
 }
