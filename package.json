@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd node_modules/leveldown && HOME=~/.electron-gyp node-gyp rebuild --target=1.2.0 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
-    "postinstall_windows": "cd node_modules/pouchdb/node_modules/leveldown; node-gyp rebuild --target=1.2.7 --dist-url=https://atom.io/download/atom-shell"
+    "postinstall_unix": "cd node_modules/leveldown && HOME=~/.electron-gyp node-gyp rebuild --target=1.2.0 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
+    "postinstall": "cd node_modules/pouchdb/node_modules/leveldown; node-gyp rebuild --target=1.4.12 --dist-url=https://atom.io/download/atom-shell"
   },
   "repository": {
     "type": "git",
@@ -26,14 +26,13 @@
   },
   "homepage": "https://github.com/Bridgeconn/bib-edit#readme",
   "devDependencies": {
-    "electron-prebuilt": "1.2.7"
+    "electron-prebuilt": "1.4.12"
   },
   "dependencies": {
     "diff-match-patch": "^1.0.0",
     "electron-plugins": "^0.1.0",
     "electron-simple-updater": "^1.2.0",
-    "electron-updater": "^0.3.1",
-    "pouchdb": "5.4.4"
+    "pouchdb": "6.1.0"
   },
   "build": {
     "appId": "com.autographa.free",
