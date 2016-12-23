@@ -31,9 +31,25 @@
     "electron-prebuilt": "1.4.12"
   },
   "dependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.2",
+    "babel-preset-react": "^6.11.0",
+    "babel-register": "^6.11.6",
+    "classnames": "^2.2.5",
     "diff-match-patch": "^1.0.0",
     "gulp": "^3.9.1",
-    "pouchdb": "6.1.0"
+    "pouchdb": "6.1.0",
+    "react": "15.1.0",
+    "react-addons-css-transition-group": "^15.3.2",
+    "react-addons-shallow-compare": "^15.3.2",
+    "react-bootstrap": "^0.29.5",
+    "react-bootstrap-date-picker": "^3.7.0",
+    "react-bootstrap-table": "^2.5.7",
+    "react-dom": "15.1.0",
+    "react-dropzone": "^3.5.1",
+    "react-remarkable": "^1.1.1",
+    "react-selectize": "^2.0.3",
+    "react-super-select": "^0.5.7"
   },
   "devDependencies":{
     "gulp": "^3.9.1",
