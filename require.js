@@ -15,5 +15,5 @@ class Assign extends React.Component {
 
  ReactDOM.render(
    <Assign />,
-   document.getElementById('container')
+   document.getElementById("container")
  );

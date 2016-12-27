@@ -9,17 +9,14 @@ const Image = require('react-bootstrap/lib/Image');
 const Button = require('react-bootstrap/lib/Button');
 
 class NavBar extends React.Component {
-
-  resizeText(multiplier){
+    resizeText(multiplier){
       if (document.body.style.fontSize == "") {
         console.log(document.body.style.fontSize);
         document.body.style.fontSize = "1.4em";
       }
       document.body.style.fontSize = parseFloat(document.body.style.fontSize) + (multiplier * 0.2) + "em";
       console.log(document.body.style.fontSize);
-    }
-
-    
+    }  
 
   render() {
     return (         
@@ -27,7 +24,7 @@ class NavBar extends React.Component {
           <Navbar className="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <Navbar.Header>
               <Navbar.Brand>
-                <a className="nav-btn" href="index.html" data-toggle="tooltip" data-placement="bottom" title="Autographa"><Image alt="Brand" src="../images/logo.png"/></a>
+                <a className="nav-btn" href="index.html" data-toggle="tooltip" data-placement="bottom" title="Autographa"><Image alt="Brand" src="../assets/images/logo.png"/></a>
               </Navbar.Brand>
             </Navbar.Header>
             <Nav>              
@@ -48,9 +45,6 @@ class NavBar extends React.Component {
                   </li>
                 </ul>
                 <ul className="nav navbar-nav navbar-right verse-diff-on">
-                  <li>
-                    <a  data-toggle="tooltip" data-placement="bottom" title="search" id="searchText"><i className="fa fa-search fa-2x"></i></a>
-                  </li>
                   <li><a href="settings.html" data-toggle="tooltip" data-placement="bottom" title="Settings" className="nav-btn"><i className="fa fa-cog fa-2x"></i></a></li>
                   <li><a href="about.html" data-toggle="tooltip" data-placement="bottom" title="About" className="nav-btn"><i className="fa fa-info fa-2x"></i></a></li>
                   <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="Export" id="export-usfm"><i className="fa fa-cloud-download fa-2x"></i></a></li>
