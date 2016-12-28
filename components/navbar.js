@@ -52,6 +52,36 @@ class NavBar extends React.Component {
               </div>
             </Nav>
           </Navbar>
+          <div className="container-fluid">
+            <div className="row row-col-fixed">
+              <div className="col-sm-6 col-fixed" id="section-0">
+                <div className="row">
+                  <div className="col-12 center-align">
+                    <div className="btn-group">
+                     
+                      <select className="ref-drop-down"></select>
+                      <input type="hidden"  className="current-val">
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div type="ref" className="col-12 col-ref">
+                  </div>
+                </div>
+              </div>
+              <div className="col-sm-6 col-fixed col-editor">
+                <div className="row">
+                  <div className="col-12 center-align">
+                    <div className="btn-group" role="group" aria-label="..."><a className="btn btn-success btn-default" href="#">Translation</a></div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div id="input-verses" className="col-12 col-ref">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>         
     )}       
 };
 
